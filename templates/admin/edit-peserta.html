@@ -1,0 +1,14 @@
+{% include "layout/header.html" %}
+<a href="/">Kembali</a>
+<h1>ini halaman Edit peserta</h1>
+<form action="/edit-peserta/{{ data[0]._id }}" method="POST" enctype="multipart/form-data">
+    <input type="text" name="nama" id="input-nama" value="{{ data[0].nama }}">
+    <input type="text" name="alamat" id="input-alamat" value="{{ data[0].alamat }}">
+    <input type="email" name="email" id="input-email" value="{{ data[0].email }}">
+    <input type="number" name="nohp" id="input-nohp" value="{{ data[0].nohp }}">
+    <input type="text" name="instrumen" id="input-instrumen" value="{{ data[0].instrumen }}">
+    <input type="number" name="umur" id="input-umur" value="{{ data[0].umur }}">
+    <button type="submit">Save</button>
+</form>
+
+{% include "layout/footer.html" %}

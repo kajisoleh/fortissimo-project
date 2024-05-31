@@ -1,0 +1,50 @@
+{% include "layout/header.html" %}
+<script>
+    function konfirmasiHapus(userId) {
+        var konfirmasi = confirm("Apakah Anda yakin ingin menghapus pengguna ini?");
+        if (konfirmasi) {
+            hapus_akun(userId);
+        }
+    }
+
+    function hapus_akun(userId) {
+        $.ajax({
+            type: 'POST',
+            url: '/delete/admin/' + userId,
+            data: {},
+            success: function (response) {
+                if (response.status === 'success') {
+                    alert(response.msg);
+                    window.location.reload()
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Terjadi kesalahan:', error);
+            }
+        })
+    }
+</script>
+<h1>ini halaman data-user</h1>
+<a href="/admin">Kembali</a>
+<a href="/register-admin">Tambah Admin</a>
+<table border="1">
+    <tr>
+        <th>No</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>role</th>
+        <th>Action</th>
+    </tr>
+    {% for user in user_items %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ user.profile_name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+            <button onclick="konfirmasiHapus('{{ user._id }}')">Delete</button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% include "layout/footer.html" %}

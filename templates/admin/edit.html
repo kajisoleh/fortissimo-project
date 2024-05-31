@@ -1,0 +1,12 @@
+{% include "layout/header.html" %}
+<a href="/">Kembali</a>
+<h1>ini halaman Edit profile Admin</h1>
+<form action="/edit-admin/{{ data[0]._id }}" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="_id" value="{{ data[0]._id }}" />
+    <input type="file" name="profile_pic_real" id="input-image">
+    <input type="text" name="profile_name" id="input-username" value="{{ data[0].profile_name }}">
+    <input type="email" name="email" id="input-email" value="{{ data[0].email }}">
+    <button type="submit">Save</button>
+</form>
+
+{% include "layout/footer.html" %}

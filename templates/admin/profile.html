@@ -1,0 +1,23 @@
+{% include "layout/header.html" %}
+<script>
+    function logout() {
+        $.removeCookie("mytoken", { path: "/" });
+        alert("Logged out!");
+        window.location.href = "/login";
+    }
+</script>
+<h1>ini halaman profile</h1>
+<img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}" width="150" height="150" />
+<h1>Selamat datang {{ user_info.profile_name }}</h1>
+
+
+
+{% if user_info %}
+<a href="/edit-admin/{{ user_info._id }}">Edit Profile</a>
+<a href="" onclick="logout()">Logout</a>
+{% else %}
+<a href="/login">Login</a>
+<a href="/about">About</a>
+{% endif %}
+
+{% include "layout/footer.html" %}

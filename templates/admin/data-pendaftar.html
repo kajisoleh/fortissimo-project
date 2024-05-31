@@ -1,0 +1,58 @@
+{% include "layout/header.html" %}
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+<script>
+    function hideApprovedRows() {
+        var rows = document.querySelectorAll('tr');
+        rows.forEach(row => {
+            var statusCell = row.querySelector('td:nth-child(7)');
+            if (statusCell && statusCell.textContent.trim() === 'Approve') {
+                row.classList.add('hidden');
+            }
+        });
+    }
+</script>
+<h1>ini halaman data-pendaftar</h1>
+<a href="/admin">Kembali</a>
+<a href="/form-daftar-admin">Tambah Data</a>
+<button onclick="hideApprovedRows()">Hide Approved</button>
+<table border="1">
+    <tr>
+        <th>Nama</th>
+        <th>Alamat</th>
+        <th>Emal</th>
+        <th>No Handphone</th>
+        <th>Instrumen</th>
+        <th>Umur</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    {% for item in daftar_items %}
+    <tr>
+        <td>{{ item.nama }}</td>
+        <td>{{ item.alamat }}</td>
+        <td>{{ item.email }}</td>
+        <td>{{ item.nohp }}</td>
+        <td>{{ item.instrumen }}</td>
+        <td>{{ item.umur }}</td>
+        {% if item.status == 'pending' %}
+        <td style="color: red;">{{ item.status }}</td>
+        {% else %}
+        <td style="color: green;">{{ item.status }}</td>
+        {% endif %}
+        <td>
+            {% if item.status == 'Approve' %}
+            <p>Selesai</p>
+            {% else %}
+            <form action="/pendaftar-update/{{ item._id }}" method="post">
+                <button type="submit">Approve</button>
+            </form>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% include "layout/footer.html" %}

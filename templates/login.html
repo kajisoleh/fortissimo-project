@@ -1,0 +1,40 @@
+{% include "layout/header.html" %}
+<script>
+    function login() {
+        let username = $("#username").val();
+        let password = $("#password").val();
+
+        if (password === "") {
+            $("#info-password").text("Please input your password.");
+            $("#password").focus();
+            return;
+        } else {
+            $("#info-password").text("");
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/login/save",
+            data: {
+                username_give: username,
+                password_give: password,
+            },
+            success: function (response) {
+                if (response["result"] === "success") {
+                    $.cookie("mytoken", response["token"], { path: "/" });
+                    window.location.replace("/");
+                } else {
+                    alert(response["msg"]);
+                }
+            },
+        });
+    }
+</script>
+<h1>Halaman Login</h1>
+<input type="text" name="username" id="username" placeholder="Username">
+<input type="password" name="password" id="password" placeholder="********">
+<p id="info-password"></p>
+<button onclick="login()">Login</button>
+<a href="/register">Register</a>
+<a href="/">kembali</a>
+{% include "layout/footer.html" %}

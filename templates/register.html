@@ -1,0 +1,75 @@
+{% include "layout/header.html" %}
+<script>
+    function is_password(asValue) {
+        var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
+        return regExp.test(asValue);
+    }
+    function register() {
+        let email = $("#email").val();
+        let username = $("#username").val();
+        let password = $("#password").val();
+        let password2 = $("#password_confirm").val();
+
+        if (password2 !== password) {
+            $("#info-confirm")
+                .text("Your passwords do not match")
+                .css("color", "red");
+            $("#password_confirm").focus();
+            return;
+        } else {
+            $("#info-confirm")
+                .text("Your passwords match!!!")
+                .css("color", "green");
+        }
+
+        if (password === "") {
+            $("#info-password")
+                .text("Please enter your password")
+                .css('color', 'red');
+            $("#password").focus();
+            return;
+        } else if (!is_password(password)) {
+            $("#info-password")
+                .text("Please check your password. For your password, please enter 8-20 English characters, numbers, or the following special characters (!@#$%^&*)")
+                .css('color', 'red');
+            $("#password").focus();
+            return;
+        } else {
+            $("#info-password")
+                .text("This password can be used!")
+                .css('color', 'green');
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/register/save",
+            data: {
+                email_give: email,
+                username_give: username,
+                password_give: password,
+            },
+            success: function (response) {
+                if (response.exists) {
+                    alert("Email already exists in the database. Please use a different email.");
+                } else {
+                    alert("You are signed up! Nice!");
+                    window.location.replace("/login");
+                }
+            },
+            error: function (err) {
+                console.error("Error checking email:", err);
+                alert("Error checking email. Please try again later.");
+            }
+        });
+    }
+</script>
+<h1>Halaman Login</h1>
+<input type="email" name="email" id="email" placeholder="Email">
+<input type="text" name="username" id="username" placeholder="Username">
+<input type="password" name="password" id="password" placeholder="********">
+<p id="info-password"></p>
+<input type="password" name="password_confirm" id="password_confirm" placeholder="********">
+<p id="info-confirm"></p>
+<button onclick="register()">Register</button>
+<a href="/">kembali</a>
+{% include "layout/footer.html" %}

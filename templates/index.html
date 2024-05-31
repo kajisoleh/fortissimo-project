@@ -1,0 +1,20 @@
+{% include "layout/header.html" %}
+<script>
+    function logout() {
+        $.removeCookie("mytoken", { path: "/" });
+        alert("Logged out!");
+        window.location.href = "/login";
+    }
+</script>
+<h1>ini halaman user</h1>
+<h1>Selamat datang {{ user_info.profile_name }}</h1>
+{% if user_info %}
+<a href="/about">About</a>
+<a href="/profile/{{ user_info._id }}">profile</a>
+<a href="/daftar/{{ user_info.username }}">Form Pendaftaran</a>
+<a href="" onclick="logout()">Logout</a>
+{% else %}
+<a href="/login">Login</a>
+<a href="/about">About</a>
+{% endif %}
+{% include "layout/footer.html" %}

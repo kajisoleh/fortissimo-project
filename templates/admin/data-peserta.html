@@ -1,0 +1,62 @@
+{% include "layout/header.html" %}
+<script>
+    function konfirmasiHapus(userId) {
+        var konfirmasi = confirm("Apakah Anda yakin ingin menghapus pengguna ini?");
+        if (konfirmasi) {
+            hapus_akun(userId);
+        }
+    }
+
+    function hapus_akun(userId) {
+        $.ajax({
+            type: 'POST',
+            url: '/delete/admin-peserta/' + userId,
+            data: {},
+            success: function (response) {
+                if (response.status === 'success') {
+                    alert(response.msg);
+                    window.location.reload()
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Terjadi kesalahan:', error);
+            }
+        })
+    }
+</script>
+<h1>ini halaman data-peserta</h1>
+<a href="/admin">Kembali</a>
+<table border="1">
+    <tr>
+        <th>Nama</th>
+        <th>Alamat</th>
+        <th>Emal</th>
+        <th>No Handphone</th>
+        <th>Instrumen</th>
+        <th>Umur</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+    {% for item in daftar_items %}
+    {% if item.status == 'Approve' %}
+    <tr>
+        <td>{{ item.nama }}</td>
+        <td>{{ item.alamat }}</td>
+        <td>{{ item.email }}</td>
+        <td>{{ item.nohp }}</td>
+        <td>{{ item.instrumen }}</td>
+        <td>{{ item.umur }}</td>
+        {% if item.status == 'Approve' %}
+        <td>Peserta Aktif</td>
+        {% else %}
+        <td>Bukan Peserta Aktif</td>
+        {% endif %}
+        <td>
+            <a href="/edit-peserta/{{ item._id }}">Edit</a>
+            <button onclick="konfirmasiHapus('{{ item._id }}')">Delete</button>
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+{% include "layout/footer.html" %}

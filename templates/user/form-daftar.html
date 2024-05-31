@@ -1,0 +1,40 @@
+{% include "layout/header.html" %}
+<script>
+    function daftar() {
+        let nama = $("#input-nama").val();
+        let alamat = $("#input-alamat").val();
+        let email = $("#input-email").val();
+        let nohp = $("#input-nohp").val();
+        let instrumen = $("#input-instrumen").val();
+        let umur = $("#input-umur").val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/daftar/save',
+            data: {
+                nama_give: nama,
+                alamat_give: alamat,
+                email_give: email,
+                nohp_give: nohp,
+                instrumen_give: instrumen,
+                umur_give: umur,
+            },
+            success: function (response) {
+                if (response.status === 'success') {
+                    alert(response.msg);
+                    window.location.replace("/profile/{{ user_info.username }}");
+                }
+            }
+        });
+    }
+</script>
+<a href="/">Kembali</a>
+<h1>ini halaman form pendaftaran</h1>
+<input type="text" name="nama" id="input-nama" placeholder="Enter Your long name">
+<input type="text" name="alamat" id="input-alamat" placeholder="Enter Your Address">
+<input type="email" name="email" id="input-email" value="{{ user_info.email }}">
+<input type="number" name="nohp" id="input-nohp" placeholder="Enter your Phone Number">
+<input type="text" name="instrumen" id="input-instrumen" placeholder="Enter Your instrument">
+<input type="number" name="umur" id="input-umur" placeholder="Enter Your Old">
+<button onclick="daftar()">Daftar</button>
+{% include "layout/footer.html" %}
