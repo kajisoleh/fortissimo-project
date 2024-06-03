@@ -1,4 +1,4 @@
-{% include "layout/header.html" %}
+{% include "user/layout/header.html" %}
 <a href="/">Kembali</a>
 <h1>ini halaman Edit profile</h1>
 <form action="/edit/{{ data[0]._id }}" method="POST" enctype="multipart/form-data">
@@ -9,4 +9,4 @@
     <button type="submit">Save</button>
 </form>
 
-{% include "layout/footer.html" %}
+{% include "user/layout/footer.html" %}

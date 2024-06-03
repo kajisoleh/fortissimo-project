@@ -1,4 +1,4 @@
-{% include "layout/header.html" %}
+{% include "user/layout/header.html" %}
 <script>
     function logout() {
         $.removeCookie("mytoken", { path: "/" });
@@ -32,4 +32,4 @@
 {% else %}
 <h1>Kamu belum mendaftar</h1>
 {% endif %}
-{% include "layout/footer.html" %}
+{% include "user/layout/footer.html" %}
