@@ -76,7 +76,7 @@ def register_admin_save():
 
     existing_user = db.users.find_one({"email": email_receive})
     if existing_user:
-        return jsonify({'error': 'Email already exists in the database. Please use a different email.'}), 400
+        return jsonify({'exists': 'Email already exists in the database. Please use a different email.'}), 400
     doc = {
         "email": email_receive,
         "username": username_receive,                               # id
@@ -85,7 +85,7 @@ def register_admin_save():
         "profile_pic": "",                                          # profile image file name
         "profile_pic_real": "profile_pics/profile_placeholder.png", # a default profile image
         "profile_info": "",                                          # a profile description
-        "role": "admin"
+        "role": "user"
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
