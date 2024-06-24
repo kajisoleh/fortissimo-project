@@ -497,7 +497,7 @@ def daftar(username):
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         status = username == payload["id"]
 
-        user_info = db.users.find_one({"username": username}, {"_id": False})
+        user_info = db.users.find_one({"username": payload["id"]})
 
         return render_template("user/form-daftar.html", user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
