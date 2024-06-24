@@ -529,7 +529,7 @@ def save_daftar():
         'status': 'pending'
     }).inserted_id
 
-    return jsonify({'status': 'success', 'msg': 'Proses pendaftaran berhasil, silahkan tunggu.', 'daftar_id': str(daftar_id)})
+    return jsonify({'status': 'success', 'msg': 'pendaftaran berhasil, silahkan lakukan konfirmasi di WhatssApp', 'daftar_id': str(daftar_id)})
 
 @app.route('/testimoni/save', methods=['POST'])
 def testimoni_save():
