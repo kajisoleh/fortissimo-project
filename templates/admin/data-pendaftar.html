@@ -1,58 +1,138 @@
 {% include "layout/header.html" %}
+{% include "layout/navbar.html" %}
 <style>
     .hidden {
         display: none;
     }
 </style>
+<section>
+    <div class="d-flex py-3 gap-4 container-dashboard">
+        <!-- Sidebar -->
+        {% include "layout/sidebar.html" %}
+        <!-- end sidebar -->
+
+        <!-- content -->
+        <!-- <div class="col content"> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Section Table -->
+                    <div class="section-table">
+                        <div class="card border-0 format-shadow p-2">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Fortissimo | <span class="text-muted">Pendaftar</span>
+                                        </h5>
+                                    </div>
+                                    <form action="/pendaftar" method="get">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input class="form-control format-search" type="search" name="search"
+                                                placeholder="Search" aria-label="Search" />
+                                            <button style="padding: 0.375rem 0.75rem"
+                                                class="btn btn-sm btn-outline-dark" type="submit">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="button d-flex justify-content-end mt-3" style="gap: 10px;">
+                                    <button class="btn btn-success" onclick="hide()">Hide Approved</button>
+                                    <a href="/form-daftar-admin"
+                                        class="d-flex align-items-center btn btn-sm btn-primary"
+                                        style="padding: 0.25rem 0.75rem 0.35rem">
+                                        <i class="bi bi-plus fs-6"></i>
+                                        <span class="d-none d-md-block">New Member</span>
+                                    </a>
+                                </div>
+
+                                <div class="container table-responsive mt-4">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">No</th>
+                                                <th scope="col">Nama Peserta</th>
+                                                <th scope="col">Alamat</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Telepon</th>
+                                                <th scope="col">Instrument</th>
+                                                <th scope="col">Price List</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            {% for item in daftar_items %}
+                                            <tr>
+                                                <th scope="row">{{ loop.index }}</th>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div>
+                                                            {{ item.nama }}
+                                                            <br />
+                                                            <small class="text-muted">{{ item.umur }} Tahun</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ item.alamat }}</td>
+                                                <td>{{ item.email }}</td>
+                                                <td>{{ item.nohp }}</td>
+                                                <td>{{ item.instrumen }}</td>
+                                                <td>{{ item.price_list }}</td>
+                                                {% if item.status == 'pending' %}
+                                                <td>
+                                                    <p class="d-flex justify-content-center"
+                                                        style="background-color: red; color: white; padding: 5px; border-radius: 5px;">
+                                                        {{ item.status }}
+                                                    </p>
+                                                </td>
+                                                {% else %}
+                                                <td>
+                                                    <p class="d-flex justify-content-center"
+                                                        style="background-color: green; color: white; padding: 5px; border-radius: 5px;">
+                                                        {{ item.status }}
+                                                    </p>
+                                                </td>
+                                                {% endif %}
+                                                <td>
+                                                    {% if item.status == 'Approve' %}
+                                                    <p>Selesai</p>
+                                                    {% else %}
+                                                    <form action="/pendaftar-update/{{ item._id }}" method="post">
+                                                        <button type="submit" class="btn btn-success"><i
+                                                                class="bi bi-check fs-6"></i></button>
+                                                    </form>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <nav>
+                                        <ul class="pagination justify-content-end" id="pagination">
+                                            <!-- Pagination buttons will be inserted here by JavaScript -->
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- </div> -->
+        <!-- end content -->
+    </div>
+</section>
 <script>
-    function hideApprovedRows() {
-        var rows = document.querySelectorAll('tr');
+    function hide() {
+        var rows = document.querySelectorAll('tbody tr');
         rows.forEach(row => {
-            var statusCell = row.querySelector('td:nth-child(7)');
+            var statusCell = row.querySelector('td:nth-child(8)');
             if (statusCell && statusCell.textContent.trim() === 'Approve') {
                 row.classList.add('hidden');
             }
         });
     }
 </script>
-<h1>ini halaman data-pendaftar</h1>
-<a href="/admin">Kembali</a>
-<a href="/form-daftar-admin">Tambah Data</a>
-<button onclick="hideApprovedRows()">Hide Approved</button>
-<table border="1">
-    <tr>
-        <th>Nama</th>
-        <th>Alamat</th>
-        <th>Emal</th>
-        <th>No Handphone</th>
-        <th>Instrumen</th>
-        <th>Umur</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-    {% for item in daftar_items %}
-    <tr>
-        <td>{{ item.nama }}</td>
-        <td>{{ item.alamat }}</td>
-        <td>{{ item.email }}</td>
-        <td>{{ item.nohp }}</td>
-        <td>{{ item.instrumen }}</td>
-        <td>{{ item.umur }}</td>
-        {% if item.status == 'pending' %}
-        <td style="color: red;">{{ item.status }}</td>
-        {% else %}
-        <td style="color: green;">{{ item.status }}</td>
-        {% endif %}
-        <td>
-            {% if item.status == 'Approve' %}
-            <p>Selesai</p>
-            {% else %}
-            <form action="/pendaftar-update/{{ item._id }}" method="post">
-                <button type="submit">Approve</button>
-            </form>
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
 {% include "layout/footer.html" %}

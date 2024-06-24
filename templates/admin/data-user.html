@@ -1,4 +1,5 @@
 {% include "layout/header.html" %}
+{% include "layout/navbar.html" %}
 <script>
     function konfirmasiHapus(userId) {
         var konfirmasi = confirm("Apakah Anda yakin ingin menghapus pengguna ini?");
@@ -24,27 +25,98 @@
         })
     }
 </script>
-<h1>ini halaman data-user</h1>
-<a href="/admin">Kembali</a>
-<a href="/register-admin">Tambah Admin</a>
-<table border="1">
-    <tr>
-        <th>No</th>
-        <th>Username</th>
-        <th>Email</th>
-        <th>role</th>
-        <th>Action</th>
-    </tr>
-    {% for user in user_items %}
-    <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ user.profile_name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
-        <td>
-            <button onclick="konfirmasiHapus('{{ user._id }}')">Delete</button>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<section>
+    <div class="d-flex py-3 gap-4 container-dashboard">
+        <!-- Sidebar -->
+        {% include "layout/sidebar.html" %}
+        <!-- end sidebar -->
+
+        <!-- content -->
+        <!-- <div class="col content"> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Section Table -->
+                    <div class="section-table">
+                        <div class="card border-0 format-shadow p-2">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Fortissimo | <span class="text-muted">Users</span></h5>
+                                    </div>
+                                    <form action="/user-data" method="get">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input class="form-control format-search" type="search" name="search"
+                                                placeholder="Search" aria-label="Search" />
+                                            <button style="padding: 0.375rem 0.75rem"
+                                                class="btn btn-sm btn-outline-dark" type="submit">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <a href="/register-admin" class="d-flex align-items-center btn btn-sm btn-primary"
+                                        style="padding: 0.25rem 0.75rem 0.35rem">
+                                        <i class="bi bi-plus fs-6"></i>
+                                        <span class="d-none d-md-block">New Admin</span>
+                                    </a>
+                                </div>
+                                <div class="table-responsive mt-4">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">No</th>
+                                                <th scope="col">Nama</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Role</th>
+                                                <th scope="col">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            {% for user in user_items %}
+                                            <tr>
+                                                <th scope="row">{{ loop.index }}</th>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://cdn.icon-icons.com/icons2/3708/PNG/512/man_person_people_avatar_icon_230017.png"
+                                                            alt="John Doe" class="rounded-circle me-2" width="30" />
+                                                        <div>
+                                                            {{ user.profile_name }}
+                                                            <br />
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ user.email }}</td>
+                                                <td>
+                                                    {% if user.role == "admin" %}
+                                                    <span class="badge bg-primary">{{ user.role }}</span>
+                                                    {% else %}
+                                                    <span class="badge bg-success">{{ user.role }}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="#" class="btn btn-sm btn-danger"
+                                                        onclick="konfirmasiHapus('{{ user._id }}')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <nav>
+                                        <ul class="pagination justify-content-end" id="pagination">
+                                            <!-- Pagination buttons will be inserted here by JavaScript -->
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- </div> -->
+        <!-- end content -->
+    </div>
+</section>
 {% include "layout/footer.html" %}

@@ -1,12 +1,57 @@
 {% include "layout/header.html" %}
-<a href="/">Kembali</a>
-<h1>ini halaman Edit profile Admin</h1>
-<form action="/edit-admin/{{ data[0]._id }}" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="_id" value="{{ data[0]._id }}" />
-    <input type="file" name="profile_pic_real" id="input-image">
-    <input type="text" name="profile_name" id="input-username" value="{{ data[0].profile_name }}">
-    <input type="email" name="email" id="input-email" value="{{ data[0].email }}">
-    <button type="submit">Save</button>
-</form>
+{% include "layout/navbar.html" %}
+<section>
+    <div class="d-flex py-3 gap-4 container-dashboard">
+        <!-- Sidebar -->
+        {% include "layout/sidebar.html" %}
+        <!-- end sidebar -->
+
+        <!-- content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Section form -->
+                    <div class="section-form">
+                        <div class="card border-0 format-shadow p-2">
+                            <div class="card-header bg-white border-0">
+                                <h5 class="m-0">Edit User</h5>
+                            </div>
+                            <div class="card-body">
+                                <form class="row g-3" action="/edit-admin/{{ data[0]._id }}" method="POST"
+                                    enctype="multipart/form-data">
+                                    <input type="hidden" name="_id" value="{{ data[0]._id }}" />
+                                    <div class="col-md-4">
+                                        <label for="inputName" class="form-label">Foto</label>
+                                        <input type="file" class="form-control" name="profile_pic_real"
+                                            id="input-image" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputEmail4" class="form-label">Profile Name</label>
+                                        <input type="text" class="form-control" name="profile_name" id="input-username"
+                                            value="{{ data[0].profile_name }}" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputPhone" class="form-label">Email</label>
+                                        <input type="email" class="form-control" name="email" id="input-email"
+                                            value="{{ data[0].email }}" />
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                                <a href="/profile-admin/{{ user_info._id }}" class="btn btn-sm btn-secondary">Cancel</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end content -->
+    </div>
+</section>
 
 {% include "layout/footer.html" %}

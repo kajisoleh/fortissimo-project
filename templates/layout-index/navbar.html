@@ -1,0 +1,19 @@
+<nav>
+    <ul class="menu">
+        <li class="logo"><a href="/"><img src="{{ url_for('static', filename='image-index/logo.jpg') }}" alt=""
+                    width="40px" height="40px"></a>
+        </li>
+        {% if user_info %}
+        <li class="icon"><a href="#"> <i class="fas fa-bars"></i></a></li>
+        <li><a href="" onclick="logout()"><i class="fas fa-user" style="margin: 0 10px;"></i>LogOut</a></li>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/profile/{{ user_info._id }}">Profile</a></li>
+        <li><a href="/daftar/{{ user_info.username }}">Form Pendaftaran</a></li>
+        {% else %}
+        <li class="icon"><a href="#"> <i class="fas fa-bars"></i></a></li>
+        <li><a href="/login"><i class="fas fa-user" style="margin: 0 10px;"></i>Login </a></li>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/">Home</a></li>
+        {% endif %}
+    </ul>
+</nav>

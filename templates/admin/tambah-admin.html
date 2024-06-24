@@ -1,4 +1,5 @@
 {% include "layout/header.html" %}
+{% include "layout/navbar.html" %}
 <script>
     function is_password(asValue) {
         var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
@@ -63,13 +64,69 @@
         });
     }
 </script>
-<h1>Halaman Login</h1>
+<section>
+    <div class="d-flex py-3 gap-4 container-dashboard">
+        <!-- Sidebar -->
+        {% include "layout/sidebar.html" %}
+        <!-- end sidebar -->
+
+        <!-- content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Section form -->
+                    <div class="section-form">
+                        <div class="card border-0 format-shadow p-2">
+                            <div class="card-header bg-white border-0">
+                                <h5 class="m-0">Tambah Admin</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="col-md-5">
+                                    <label for="" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="Enter your email" />
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username"
+                                        placeholder="Username" />
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="************" />
+                                </div>
+                                <p id="info-password"></p>
+                                <div class="col-md-5">
+                                    <label for="" class="form-label">Confirm Password</label>
+                                    <input type="password" class="form-control" name="password_confirm"
+                                        id="password_confirm" placeholder="***********" />
+                                </div>
+                                <p id="info-confirm"></p>
+                                <div class="col-12">
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center gap-1">
+                                            <button onclick="register()" class="btn btn-sm btn-primary">Save</button>
+                                            <a href="/user-data" class="btn btn-sm btn-secondary">Cancel</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end content -->
+    </div>
+</section>
+<!-- <h1>Halaman Login</h1>
 <input type="email" name="email" id="email" placeholder="Email">
 <input type="text" name="username" id="username" placeholder="Username">
 <input type="password" name="password" id="password" placeholder="********">
 <p id="info-password"></p>
 <input type="password" name="password_confirm" id="password_confirm" placeholder="********">
 <p id="info-confirm"></p>
-<button onclick="register()">Register</button>
-<a href="/">kembali</a>
+<button onclick="register()" class="btn btn">Register</button>
+<a href="/">kembali</a> -->
 {% include "layout/footer.html" %}

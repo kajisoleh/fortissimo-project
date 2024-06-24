@@ -7,6 +7,7 @@
         let nohp = $("#input-nohp").val();
         let instrumen = $("#input-instrumen").val();
         let umur = $("#input-umur").val();
+        let list = $("#input-list").val();
 
         $.ajax({
             type: 'POST',
@@ -18,6 +19,7 @@
                 nohp_give: nohp,
                 instrumen_give: instrumen,
                 umur_give: umur,
+                list_give: list
             },
             success: function (response) {
                 if (response.status === 'success') {
@@ -28,13 +30,141 @@
         });
     }
 </script>
-<a href="/">Kembali</a>
-<h1>ini halaman form pendaftaran</h1>
-<input type="text" name="nama" id="input-nama" placeholder="Enter Your long name">
-<input type="text" name="alamat" id="input-alamat" placeholder="Enter Your Address">
-<input type="email" name="email" id="input-email" value="{{ user_info.email }}">
-<input type="number" name="nohp" id="input-nohp" placeholder="Enter your Phone Number">
-<input type="text" name="instrumen" id="input-instrumen" placeholder="Enter Your instrument">
-<input type="number" name="umur" id="input-umur" placeholder="Enter Your Old">
-<button onclick="daftar()">Daftar</button>
-{% include "user/layout/footer.html" %}
+<style>
+    body {
+        background-color: #fae6b4;
+    }
+
+    .container-custom {
+        margin-top: 20px;
+        background-color: #fae6b4;
+    }
+
+    .card-custom {
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .btn-submit {
+        background-color: #28a745;
+        border: none;
+        color: white;
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .profile-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 150%;
+        background-color: #fae6b4;
+    }
+
+    .image-container img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .navbar-custom {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer {
+        background-color: #fff;
+        box-shadow: 0px 0px 10px 0px #ececec;
+        padding: 10px;
+        margin-top: 40px;
+    }
+
+    .sosmed {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .footer h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .footer a {
+        color: #333;
+        display: block;
+        text-decoration: none;
+    }
+
+    .footer p {
+        margin: 30px;
+        line-height: 2;
+        text-align: center;
+    }
+</style>
+<div class="container container-custom">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-6">
+            <div class="card card-custom shadow-sm">
+                <h3 class="form-header">Form Pendaftaran</h3>
+                <div class="form-group">
+                    <label for="name">Nama Lengkap</label>
+                    <input type="text" class="form-control" name="nama" id="input-nama" required />
+                </div>
+                <div class="form-group">
+                    <label for="address">Alamat</label>
+                    <input type="text" class="form-control" name="alamat" id="input-alamat" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="input-email" value="{{ user_info.email }}"
+                        required />
+                </div>
+                <div class="form-group">
+                    <label for="phone">No Handphone</label>
+                    <input type="text" class="form-control" name="nohp" id="input-nohp" required />
+                </div>
+                <div class="form-group">
+                    <label for="instrument">Instrument</label>
+                    <input type="text" class="form-control" name="instrumen" id="input-instrumen" required />
+                </div>
+                <div class="form-group">
+                    <label for="age">Umur</label>
+                    <input type="number" class="form-control" name="umur" id="input-umur" required />
+                </div>
+                <div class="form-group">
+                    <label for="">Package</label>
+                    <select name="list" id="input-list" class="form-control">
+                        <option value="" disabled>Price List</option>
+                        <option value="Kids">Kids</option>
+                        <option value="Adult">Adult</option>
+                    </select>
+                </div>
+                <button onclick="daftar()" class="btn-submit">Daftar</button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="image-container">
+                <img src="{{ url_for('static', filename='image/piano.png') }}" alt="Piano Image" class="img-fluid" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <div class="copyright col-lg-12">
+        <p>
+            Copyright &copy; 2023 Explore Indonesia <br>
+            Design by <strong>Corsair</strong>
+        </p>
+    </div>
+</div>

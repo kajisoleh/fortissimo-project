@@ -1,0 +1,50 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h5 class="text-center my-3">Fortissimo Course</h5>
+    </div>
+    <ul class="list-unstyled components mt-4">
+        <li>
+            <a class="d-flex align-items-center justify-content-center gap-2" href="/admin">
+                <i class="bi bi-speedometer2 fs-6"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a class="d-flex align-items-center justify-content-center gap-2" href="/peserta">
+                <i class="bi bi-people fs-6"></i>
+                <span>Data Peserta</span>
+            </a>
+        </li>
+        <li>
+            <a class="d-flex align-items-center justify-content-center gap-2" href="/pendaftar">
+                <i class="bi bi-person-check fs-6"></i>
+                <span>Data Pendaftar</span>
+            </a>
+        </li>
+        <li>
+            <a class="d-flex align-items-center justify-content-center gap-2" href="/user-data">
+                <i class="bi bi-person fs-6"></i>
+                <span>Data User</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebarLinks = document.querySelectorAll(".sidebar .components li");
+        const currentURL = window.location.href;
+
+        // Menambahkan kelas active ke tautan yang sesuai dengan halaman saat ini
+        sidebarLinks.forEach(link => {
+            const href = link.querySelector('a').href; // Ambil href dari elemen tautan
+
+            console.log("Link Href:", href);
+            console.log("Current URL:", currentURL);
+
+            if (href === currentURL) {
+                link.classList.add("active"); // Ganti ke link.classList
+            }
+        });
+    });
+
+</script>

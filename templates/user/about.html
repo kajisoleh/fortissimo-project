@@ -1,4 +1,81 @@
-{% include "user/layout/header.html" %}
-<h1>ini halaman about</h1>
-<a href="/">Kembali</a>
-{% include "user/layout/footer.html" %}
+{% include 'layout-index/header.html' %}
+
+<body>
+    <div class="wrapper">
+
+        <section class="bg-header">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="bg-menu">
+                        {% include "layout-index/navbar.html" %}
+                    </div>
+                </div><!-- .col-lg-12 -->
+                <div class="col-lg-12">
+                    <div class="banner-about">
+                        <div class="text-banner-about">
+                            <h1>Team of Fortissimo</h1>
+                            <p>"Mari kita belajar besama Fortissimo"</p>
+                        </div>
+                    </div>
+                </div><!-- .col-lg-12 -->
+            </div>
+        </section>
+
+        <section class="bg-popular">
+            <div class="wrap-center row">
+
+                <div class="col-lg-12">
+                    <div class="judul">
+                        <h3 class="sub">Fortissimo</h3>
+                        <h1>Team</h1>
+                    </div>
+                </div><!-- col-12 -->
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="popular">
+                        <img src="{{ url_for('static', filename='image-index/about/M1.jpg') }}">
+                        <div class="text-popular">
+                            <h2>
+                                Gabriella Manik
+                            </h2>
+                            <hr>
+                            <h4>Mentor</h4>
+
+                            <p class="sub-popular">
+                                Saya adalah seorang mentor piano yang berpengalaman dan berdedikasi dengan passion untuk
+                                mengajar dan berbagi kecintaan saya pada musik. Saya menawarkan pelajaran piano untuk
+                                semua tingkatan, dari pemula hingga mahir, dan menyesuaikan pelajaran saya dengan
+                                kebutuhan dan tujuan individu Anda.
+                            </p>
+                        </div><!-- text -->
+                    </div>
+                </div><!-- col-4 -->
+
+                <div class="col-lg-4 col-md-6">
+                </div><!-- col-4 -->
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="popular">
+                        <img src="{{ url_for('static', filename='image-index/about/M2.jpg') }}">
+                        <div class="text-popular">
+                            <h2>
+                                Rahel Manik
+                            </h2>
+                            <hr>
+                            <h4>Mentor</h4>
+                            <p class="sub-popular">
+                                Saya adalah seorang mentor piano yang berpengalaman dan berdedikasi dengan passion untuk
+                                mengajar dan berbagi kecintaan saya pada musik. Saya menawarkan pelajaran piano untuk
+                                semua tingkatan, dari pemula hingga mahir, dan menyesuaikan pelajaran saya dengan
+                                kebutuhan dan tujuan individu Anda.
+                            </p>
+                        </div><!-- text -->
+                    </div>
+                </div><!-- col-4 -->
+
+            </div>
+        </section>
+        {% include 'layout-index/footer.html' %}
+</body>
+
+</html>

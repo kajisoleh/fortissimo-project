@@ -1,4 +1,68 @@
 {% include "layout/header.html" %}
+{% include "layout/navbar.html" %}
+<section>
+    <div class="d-flex py-3 gap-4 container-dashboard">
+        <!-- Sidebar -->
+        {% include "layout/sidebar.html" %}
+        <!-- end sidebar -->
+
+        <!-- content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Section form -->
+                    <div class="section-form">
+                        <div class="card border-0 format-shadow p-2">
+                            <div class="card-header bg-white border-0">
+                                <h5 class="m-0">Edit Peserta</h5>
+                            </div>
+                            <div class="card-body">
+                                <form class="row g-3" action="/edit-peserta/{{ data[0]._id }}" method="post">
+                                    <div class="col-md-4">
+                                        <label for="inputName" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="input-nama" name="nama" placeholder="John Doe" value="{{ data[0].nama }}" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputEmail4" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="input-email" name="email"
+                                            placeholder="Enter your email" value="{{ data[0].email }}"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputPhone" class="form-label">Phone</label>
+                                        <input type="text" class="form-control" id="input-nohp" name="nohp"
+                                            placeholder="081234567890" value="{{ data[0].nohp }}"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputAddress" class="form-label">Address</label>
+                                        <input type="text" class="form-control" id="input-alamat" name="alamat"
+                                            placeholder="1234 Main St"value="{{ data[0].alamat }}" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputInstrument" class="form-label">Instrument</label>
+                                        <input type="text" class="form-control" id="input-instrumen" name="instrumen"
+                                            placeholder="Guitar" value="{{ data[0].instrumen }}"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputInstrument" class="form-label">Umur</label>
+                                        <input type="text" class="form-control" id="input-umur" name="umur"
+                                            placeholder="Guitar" value="{{ data[0].umur }}"/>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center gap-1">
+                                            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                            <a href="/peserta" class="btn btn-sm btn-secondary">Cancel</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end content -->
+    </div>
+</section>
 <a href="/">Kembali</a>
 <h1>ini halaman Edit peserta</h1>
 <form action="/edit-peserta/{{ data[0]._id }}" method="POST" enctype="multipart/form-data">

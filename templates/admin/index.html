@@ -1,20 +1,169 @@
 {% include "layout/header.html" %}
+{% include "layout/navbar.html" %}
+<section>
+    <div class="d-flex py-3 gap-4 container-dashboard">
+        <!-- Sidebar -->
+        {% include "layout/sidebar.html" %}
+        <!-- end sidebar -->
+
+        <!-- content -->
+        <!-- <div class="col content"> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Intro -->
+                    <div class="intro">
+                        <p class="mb-2">
+                            Hi, Everyone. Welcome to
+                            <span class="fw-semibold">Fortissimo Course</span>
+                        </p>
+                        <h4 class="fw-semibold">Dashboard</h4>
+                    </div>
+                    <!-- End Intro -->
+
+                    <!-- Section Card -->
+                    <div class="section-card mt-3">
+                        <div class="d-flex align-items-center flex-wrap gap-3">
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="card border-0 card-siswa position-relative overflow-hidden">
+                                    <div class="first-buble-siswa"></div>
+                                    <div class="second-buble-siswa"></div>
+                                    <div class="card-body">
+                                        <i class="bi bi-people fs-3 text-white"></i>
+                                        <p class="card-text mb-1 text-white">Total Siswa</p>
+                                        <h4 class="card-number text-white">{{ jumlah_siswa }} Siswa</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="card border-0 card-pendaftar position-relative overflow-hidden">
+                                    <div class="first-buble-pendaftar"></div>
+                                    <div class="card-body">
+                                        <i class="bi bi-person-add fs-3 text-white"></i>
+                                        <p class="card-text mb-1 text-white">Pendaftar</p>
+                                        <h4 class="card-number text-white">{{ jumlah_pendaftar }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="card border-0 card-pending position-relative overflow-hidden">
+                                    <div class="first-buble-pending"></div>
+                                    <div class="second-buble-pending"></div>
+                                    <div class="card-body">
+                                        <i class="bi bi-people fs-3 text-white"></i>
+                                        <p class="card-text mb-1 text-white">Pending</p>
+                                        <h4 class="card-number text-white">{{ jumlah_pendaftar }} Siswa</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Section Card -->
+
+                    <!-- Section Table -->
+                    <div class="section-table mt-3">
+                        <div class="card border-0 format-shadow p-2">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Peserta Aktif</h5>
+                                    </div>
+                                    <form action="/admin" method="get">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input class="form-control format-search" type="search" name="search"
+                                                placeholder="Search" aria-label="Search" />
+                                            <button style="padding: 0.375rem 0.75rem"
+                                                class="btn btn-sm btn-outline-dark" type="submit">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="table-responsive mt-4">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">No</th>
+                                                <th scope="col">Nama Peserta</th>
+                                                <th scope="col">Alamat</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Telepon</th>
+                                                <th scope="col">Instrument</th>
+                                                <th scope="col">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            {% for item in daftar_items %}
+                                            {% if item.status == 'Approve' %}
+                                            <tr>
+                                                <th scope="row">{{ loop.index }}</th>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div>
+                                                            {{ item.nama }}
+                                                            <br />
+                                                            <small class="text-muted">{{ item.umur }} Tahun</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ item.alamat }}</td>
+                                                <td>{{ item.email }}</td>
+                                                <td>{{ item.nohp }}</td>
+                                                <td>{{ item.instrumen }}</td>
+                                                <td>
+                                                    <a href="/edit-peserta/{{ item._id }}"
+                                                        class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-sm btn-danger"
+                                                        onclick="konfirmasiHapus('{{ item._id }}')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <nav>
+                                        <ul class="pagination justify-content-end" id="pagination">
+                                            <!-- Pagination buttons will be inserted here by JavaScript -->
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- </div> -->
+        <!-- end content -->
+    </div>
+</section>
 <script>
-    function logout() {
-        $.removeCookie("mytoken", { path: "/" });
-        alert("Logged out!");
-        window.location.href = "/login";
+    function konfirmasiHapus(userId) {
+        var konfirmasi = confirm("Apakah Anda yakin ingin menghapus pengguna ini?");
+        if (konfirmasi) {
+            hapus_akun(userId);
+        }
+    }
+
+    function hapus_akun(userId) {
+        $.ajax({
+            type: 'POST',
+            url: '/delete/admin-peserta/' + userId,
+            data: {},
+            success: function (response) {
+                if (response.status === 'success') {
+                    alert(response.msg);
+                    window.location.reload()
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Terjadi kesalahan:', error);
+            }
+        })
     }
 </script>
-<h1>ini halaman admin</h1>
-<h1>Selamat datang {{ user_info.profile_name }}</h1>
-{% if user_info %}
-<a href="/pendaftar">Data Pendaftar</a>
-<a href="/peserta">Data Penserta</a>
-<a href="/user-data">Data User</a>
-<a href="/profile-admin/{{ user_info._id }}">Profile</a>
-<a href="" onclick="logout()">Logout</a>
-{% else %}
-<a href="/login">Login</a>
-{% endif %}
 {% include "layout/footer.html" %}

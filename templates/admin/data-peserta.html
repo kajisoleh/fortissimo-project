@@ -1,4 +1,5 @@
 {% include "layout/header.html" %}
+{% include "layout/navbar.html" %}
 <script>
     function konfirmasiHapus(userId) {
         var konfirmasi = confirm("Apakah Anda yakin ingin menghapus pengguna ini?");
@@ -24,39 +25,96 @@
         })
     }
 </script>
-<h1>ini halaman data-peserta</h1>
-<a href="/admin">Kembali</a>
-<table border="1">
-    <tr>
-        <th>Nama</th>
-        <th>Alamat</th>
-        <th>Emal</th>
-        <th>No Handphone</th>
-        <th>Instrumen</th>
-        <th>Umur</th>
-        <th>Status</th>
-        <th>Action</th>
-    </tr>
-    {% for item in daftar_items %}
-    {% if item.status == 'Approve' %}
-    <tr>
-        <td>{{ item.nama }}</td>
-        <td>{{ item.alamat }}</td>
-        <td>{{ item.email }}</td>
-        <td>{{ item.nohp }}</td>
-        <td>{{ item.instrumen }}</td>
-        <td>{{ item.umur }}</td>
-        {% if item.status == 'Approve' %}
-        <td>Peserta Aktif</td>
-        {% else %}
-        <td>Bukan Peserta Aktif</td>
-        {% endif %}
-        <td>
-            <a href="/edit-peserta/{{ item._id }}">Edit</a>
-            <button onclick="konfirmasiHapus('{{ item._id }}')">Delete</button>
-        </td>
-    </tr>
-    {% endif %}
-    {% endfor %}
-</table>
+<section>
+    <div class="d-flex py-3 gap-4 container-dashboard">
+        <!-- Sidebar -->
+        {% include "layout/sidebar.html" %}
+        <!-- end sidebar -->
+
+        <!-- content -->
+        <!-- <div class="col content"> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Section Table -->
+                    <div class="section-table">
+                        <div class="card border-0 format-shadow p-2">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h5 class="card-title">Fortissimo | <span class="text-muted">Peserta</span></h5>
+                                    </div>
+                                    <form action="/peserta" method="get">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <input class="form-control format-search" type="search" name="search"
+                                                placeholder="Search" aria-label="Search" />
+                                            <button style="padding: 0.375rem 0.75rem"
+                                                class="btn btn-sm btn-outline-dark" type="submit">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="table-responsive mt-4">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">No</th>
+                                                <th scope="col">Nama Peserta</th>
+                                                <th scope="col">Alamat</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Telepon</th>
+                                                <th scope="col">Instrument</th>
+                                                <th scope="col">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableBody">
+                                            {% for item in daftar_items %}
+                                            {% if item.status == 'Approve' %}
+                                            <tr>
+                                                <th scope="row">{{ loop.index }}</th>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div>
+                                                            {{ item.nama }}
+                                                            <br />
+                                                            <small class="text-muted">{{ item.umur }} Tahun</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ item.alamat }}</td>
+                                                <td>{{ item.email }}</td>
+                                                <td>{{ item.nohp }}</td>
+                                                <td>{{ item.instrumen }}</td>
+                                                <td>
+                                                    <a href="/edit-peserta/{{ item._id }}"
+                                                        class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a href="#" class="btn btn-sm btn-danger"
+                                                        onclick="konfirmasiHapus('{{ item._id }}')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <nav>
+                                        <ul class="pagination justify-content-end" id="pagination">
+                                            <!-- Pagination buttons will be inserted here by JavaScript -->
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- </div> -->
+        <!-- end content -->
+    </div>
+</section>
 {% include "layout/footer.html" %}

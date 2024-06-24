@@ -1,15 +1,23 @@
 import os
 from os.path import join, dirname
+import smtplib
 from bson import ObjectId
 import bson
 from pymongo import MongoClient
 import jwt
 import datetime
 import hashlib
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+from flask import Flask, flash, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
+from flask_paginate import Pagination, get_page_args
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import logging
+
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -24,12 +32,30 @@ db = client[DB_NAME]
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["UPLOAD_FOLDER"] = "./static/profile_pics"
-
+app.secret_key = 'fortissimo'
+MAIL_USERNAME = 'fortissimocourse@gmail.com'
+MAIL_PASSWORD = 'pqut hlpz brdo wwuz'  # Pastikan ini adalah kata sandi yang benar atau kata sandi aplikasi
 SECRET_KEY = "CORSAIR"
 
 
-app = Flask(__name__)
 
+def send_email(to_email, subject, body):
+    msg = MIMEMultipart()
+    msg['From'] = MAIL_USERNAME
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(MAIL_USERNAME, MAIL_PASSWORD)
+        text = msg.as_string()
+        server.sendmail(MAIL_USERNAME, to_email, text)
+        server.quit()
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
 @app.route('/')
 def home():
@@ -46,7 +72,8 @@ def home():
             return redirect(url_for("login", msg="Your token has expired"))
         except jwt.exceptions.DecodeError:
             return redirect(url_for("login", msg="There was problem logging you in"))
-    return render_template('index.html', user_info=user_info)
+    testimoni_data = list(db.testimoni.find({}))
+    return render_template('index.html', user_info=user_info, testimoni_data=testimoni_data)
 
 @app.route('/admin')
 def admin():
@@ -54,8 +81,18 @@ def admin():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload["id"]})
+        daftar_items = list(db.daftar.find({}))
+        jumlah_pendaftar = db.daftar.count_documents({"status": "pending"})
+        jumlah_siswa = db.daftar.count_documents({"status": "Approve"})
+        search_query = request.args.get('search', '')
+        
+        # Menerapkan filter pencarian jika ada
+        if search_query:
+            daftar_items = db.daftar.find({"nama": {"$regex": search_query, "$options": "i"}})
+        else:
+            daftar_items = db.daftar.find({})
         if user_info["role"] == "admin":
-            return render_template('admin/index.html', user_info=user_info)
+            return render_template('admin/index.html', user_info=user_info, daftar_items=daftar_items, jumlah_pendaftar=jumlah_pendaftar, jumlah_siswa=jumlah_siswa)
         else:
             return redirect(url_for("home"))
     except jwt.ExpiredSignatureError:
@@ -65,7 +102,10 @@ def admin():
     
 @app.route('/register-admin', methods=["GET"])
 def register_admin():
-    return render_template("admin/tambah-admin.html")
+    token_receive = request.cookies.get("mytoken")
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+    user_info = db.users.find_one({"username": payload["id"]})
+    return render_template("admin/tambah-admin.html", user_info=user_info)
 
 @app.route("/register-admin/save", methods=["POST"])
 def register_admin_save():
@@ -85,7 +125,7 @@ def register_admin_save():
         "profile_pic": "",                                          # profile image file name
         "profile_pic_real": "profile_pics/profile_placeholder.png", # a default profile image
         "profile_info": "",                                          # a profile description
-        "role": "user"
+        "role": "admin"
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
@@ -96,7 +136,21 @@ def pendaftar():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload["id"]})
-        daftar_items = list(db.daftar.find({}))
+        search_query = request.args.get('search', '')
+
+        # Terapkan filter pencarian jika ada
+        if search_query:
+            filter_query = {
+            "$or": [
+                {"nama": {"$regex": search_query, "$options": "i"}},
+                {"alamat": {"$regex": search_query, "$options": "i"}},
+                {"instrumen": {"$regex": search_query, "$options": "i"}},
+                {"price_list": {"$regex": search_query, "$options": "i"}},
+            ]
+        }
+        else:
+            filter_query = {}
+        daftar_items = list(db.daftar.find(filter_query))
         return render_template('admin/data-pendaftar.html', user_info=user_info, daftar_items=daftar_items)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="Your token has expired"))
@@ -115,12 +169,39 @@ def peserta():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload["id"]})
-        daftar_items = list(db.daftar.find({}))
-        return render_template('admin/data-peserta.html', user_info=user_info, daftar_items=daftar_items)
+
+        search_query = request.args.get('search', '')
+
+        # Terapkan filter pencarian jika ada
+        if search_query:
+            filter_query = {
+                "$or": [
+                    {"nama": {"$regex": search_query, "$options": "i"}},
+                    {"alamat": {"$regex": search_query, "$options": "i"}},
+                    {"instrumen": {"$regex": search_query, "$options": "i"}}
+                ]
+            }
+        else:
+            filter_query = {}
+
+        # Parameter paginasi
+        page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page',default_per_page=2)
+
+        # Kueri untuk data yang dipaginasi
+        daftar_items_cursor = db.daftar.find(filter_query).skip(offset).limit(per_page)
+        daftar_items = list(daftar_items_cursor)
+
+        # Hitung total dokumen (termasuk filter)
+        total = db.daftar.count_documents(filter_query)
+
+        # Objek paginasi
+        pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
+
+        return render_template('admin/data-peserta.html', user_info=user_info, daftar_items=daftar_items, pagination=pagination)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
-        return redirect(url_for("login", msg="There was problem logging you in"))
+        return redirect(url_for("login", msg="There was a problem logging you in"))
     
 @app.route('/edit-peserta/<string:_id>', methods=['GET', 'POST'])
 def edit_admin_peserta(_id):
@@ -146,8 +227,11 @@ def edit_admin_peserta(_id):
 
     id = ObjectId(_id)
     data = list(db.daftar.find({'_id': id}))
+    token_receive = request.cookies.get("mytoken")
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+    user_info = db.users.find_one({"username": payload["id"]})
     print (data)
-    return render_template("admin/edit-peserta.html", data=data)
+    return render_template("admin/edit-peserta.html", data=data, user_info=user_info)
     
 @app.route('/user-data', methods=['GET'])
 def data_user():
@@ -155,8 +239,15 @@ def data_user():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload["id"]})
-        user_items = list(db.users.find({}))
         no = 1
+        search_query = request.args.get('search', '')
+
+        # Terapkan filter pencarian jika ada
+        if search_query:
+            filter_query = {"profile_name": {"$regex": search_query, "$options": "i"}}
+        else:
+            filter_query = {}
+        user_items = list(db.users.find(filter_query))
         return render_template('admin/data-user.html', user_info=user_info, user_items=user_items)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="Your token has expired"))
@@ -211,17 +302,33 @@ def edit_admin(_id):
 
 @app.route('/form-daftar-admin')
 def pendaftar_admin():
-    return render_template("admin/create-pendaftar.html")
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload["id"]})
+        daftar_items = list(db.daftar.find({}))
+        return render_template('admin/create-pendaftar.html', user_info=user_info, daftar_items=daftar_items)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="There was problem logging you in"))
 
 @app.route('/daftar-admin-form/save', methods=['POST'])
 def save_daftar_admin():
-    nama = request.form['nama_give']
-    alamat = request.form['alamat_give']
-    email = request.form['email_give']
-    nohp = request.form['nohp_give']
-    instrumen = request.form['instrumen_give']
-    umur = request.form['umur_give']
+    nama = request.form.get('nama_give')
+    alamat = request.form.get('alamat_give')
+    email = request.form.get('email_give')
+    nohp = request.form.get('nohp_give')
+    instrumen = request.form.get('instrumen_give')
+    umur = request.form.get('umur_give')
+    price_list = request.form.get('list_give')
 
+    # Validasi jika ada data yang kosong
+    if not all([nama, alamat, email, nohp, instrumen, umur]):
+        # Data ada yang kosong, tampilkan pesan gagal dan redirect kembali ke halaman sebelumnya
+        return jsonify({'status': 'error', 'msg': 'Gagal! Silahkan lengkapi semua data.'})
+
+    # Semua data sudah diisi, lanjutkan dengan proses pendaftaran
     daftar_id = db.daftar.insert_one({
         'nama': nama,
         'alamat': alamat,
@@ -229,6 +336,7 @@ def save_daftar_admin():
         'nohp': nohp,
         'instrumen': instrumen,
         'umur': umur,
+        'price_list': price_list,
         'status': 'pending'
     })
 
@@ -321,7 +429,20 @@ def register_save():
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('user/about.html')
+    token_receive = request.cookies.get("mytoken")
+    user_info = None
+    if token_receive:
+        print(user_info)
+        try:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+            user_info = db.users.find_one({"username": payload["id"]})
+            if user_info and user_info.get("role") == "admin":
+                return redirect(url_for("admin"))
+        except jwt.ExpiredSignatureError:
+            return redirect(url_for("login", msg="Your token has expired"))
+        except jwt.exceptions.DecodeError:
+            return redirect(url_for("login", msg="There was problem logging you in"))
+    return render_template('user/about.html', user_info=user_info)
 
 @app.route("/profile/<id>")
 def profile(id):
@@ -377,6 +498,7 @@ def daftar(username):
         status = username == payload["id"]
 
         user_info = db.users.find_one({"username": username}, {"_id": False})
+
         return render_template("user/form-daftar.html", user_info=user_info, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
@@ -389,6 +511,7 @@ def save_daftar():
     nohp = request.form['nohp_give']
     instrumen = request.form['instrumen_give']
     umur = request.form['umur_give']
+    list_price = request.form['list_give']
 
     user = db.users.find_one({'email': email})
 
@@ -402,10 +525,84 @@ def save_daftar():
         'nohp': nohp,
         'instrumen': instrumen,
         'umur': umur,
+        'price_list': list_price,
         'status': 'pending'
     }).inserted_id
 
     return jsonify({'status': 'success', 'msg': 'Proses pendaftaran berhasil, silahkan tunggu.', 'daftar_id': str(daftar_id)})
+
+@app.route('/testimoni/save', methods=['POST'])
+def testimoni_save():
+    token_receive = request.cookies.get("mytoken")
+    if not token_receive:
+        return redirect(url_for('login'))  # Redirect ke halaman login jika tidak ada token
+
+    logging.debug("Token received: %s", token_receive)
+    user = db.users.find_one({})
+    user_id = user['_id']
+    testimoni = request.form['testimoni_give']
+    nama = request.form['nama_give']
+    email = request.form['email_give']
+    subject = request.form['subject_give']
+
+    
+
+    if not testimoni:
+        return jsonify({'msg': 'Testimoni cannot be empty'}), 400
+
+    doc = {
+        'user_id': user_id,
+        'testimoni': testimoni,
+        'nama': nama,
+        'email': email,
+        'subject': subject,
+    }
+
+    try:
+        db.testimoni.insert_one(doc)
+        return jsonify({'msg': 'Terima kasih atas pengisian testimoninya '})
+    except Exception as e:
+        return jsonify({'msg': 'An error occurred', 'error': str(e)}), 500
+
+@app.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        user = db.users.find_one({'email': email})
+        if user:
+            token = jwt.encode({'email': email, 'exp': datetime.now(timezone.utc) + timedelta(minutes=30)}, SECRET_KEY, algorithm='HS256')
+            reset_url = url_for('reset_with_token', token=token, _external=True)
+            subject = "Password Reset Request"
+            body = f'Please click the following link to reset your password: {reset_url}'
+            send_email(email, subject, body)
+            return render_template('email_sent.html')
+        else:
+            flash('Email address not found', 'error')
+    return render_template('reset_password.html')
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_with_token(token):
+    try:
+        data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        email = data['email']
+    except jwt.ExpiredSignatureError:
+        flash('Tautan reset telah kedaluwarsa', 'error')
+        return redirect(url_for('reset_password'))
+    except jwt.InvalidTokenError:
+        flash('Tautan reset tidak valid', 'error')
+        return redirect(url_for('reset_password'))
+
+    if request.method == 'POST':
+        new_password = request.form['password']
+
+        hashed_password = hashlib.sha256(new_password.encode('utf-8')).hexdigest()
+        db.users.update_one({'email': email}, {'$set': {'password': hashed_password}})
+        flash('Kata sandi Anda telah diperbarui!', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('new_password.html', token=token)
+
+
 
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5000, debug=True)

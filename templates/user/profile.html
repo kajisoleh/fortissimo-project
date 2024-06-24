@@ -5,31 +5,205 @@
         alert("Logged out!");
         window.location.href = "/login";
     }
+    function whatsapp() {
+        // Mendapatkan teks dari elemen dengan ID 'messageText' di halaman web
+        var pesan = 'Hallo min, saya sudah melakukan pendaftaran atas nama : ';
+
+        // Nomor WhatsApp
+        var phoneNumber = '6285624712942'; // Ganti dengan nomor WhatsApp yang sebenarnya
+
+        // Membuat URL untuk membuka aplikasi WhatsApp dengan nomor dan pesan
+        var whatsappUrl = 'https://api.whatsapp.com/send?phone=' + phoneNumber + '&text=' + encodeURIComponent(
+            pesan);
+
+        // Buka WhatsApp di tab baru
+        window.open(whatsappUrl, '_blank')
+    };
 </script>
-<h1>ini halaman profile</h1>
-<img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}" width="150" height="150" />
-<h1>Selamat datang {{ user_info.profile_name }}</h1>
+<style>
+    body {
+        background-color: #fae6b4;
+        /* warm beige background */
+        font-family: "Lora", sans-serif;
+    }
 
+    .card {
+        background-color: #ffe6e6;
+        /* pink */
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.25);
+        border: none;
+        border-radius: 20px;
+        max-width: 900px;
+        margin: auto;
+        padding: 0;
+        overflow: hidden;
+    }
 
+    .card-header {
+        background-color: #333;
+        /* dark gray */
+        color: #fff;
+        padding: 20px;
+        border-bottom: 1px solid #333;
+        text-align: center;
+    }
 
-{% if user_info %}
-<a href="/about">About</a>
-<a href="/edit/{{ user_info._id }}">Edit Profile</a>
-<a href="" onclick="logout()">Logout</a>
-{% else %}
-<a href="/login">Login</a>
-<a href="/about">About</a>
-{% endif %}
+    .card-body {
+        padding: 20px;
+    }
 
-{% if daftar_list %}
-    {% for item in daftar_list %}
+    .card-image {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .card-image img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .btn-primary {
+        background-color: #ff69b4;
+        /* pink button */
+        border-color: #ff69b4;
+    }
+
+    .btn-primary:hover {
+        background-color: #ffc107;
+        /* orange button on hover */
+        border-color: #ffc107;
+    }
+
+    .btn-secondary {
+        background-color: #333;
+        /* dark gray button */
+        border-color: #333;
+    }
+
+    .btn-secondary:hover {
+        background-color: #555;
+        /* darker gray button on hover */
+        border-color: #555;
+    }
+
+    .footer {
+        background-color: #fff;
+        box-shadow: 0px 0px 10px 0px #ececec;
+        padding: 10px;
+        margin-top: 40px;
+    }
+
+    .sosmed {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .footer h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .footer a {
+        color: #333;
+        display: block;
+        text-decoration: none;
+    }
+
+    .footer p {
+        margin: 30px;
+        line-height: 2;
+        text-align: center;
+    }
+</style>
+<section>
+    <div class="container py-3">
+        <!-- content -->
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <!-- Section form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="m-0">My Profile</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <div class="card-image">
+                            <img src="{{ url_for('static', filename=user_info.profile_pic_real) }}" alt="profile" />
+                            <h6 class="mt-3 mb-1">{{ user_info.profile_name }}</h6>
+                            <small class="text-muted">{{ user_info.email }}</small>
+                        </div>
+                        <form class="d-flex flex-column align-items-center gap-4 w-75">
+                            <div class="col-12 form-group">
+                                <label for="inputUsername" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="inputUsername"
+                                    value="{{ user_info.username }}" disabled />
+                            </div>
+                            <div class="col-12 form-group">
+                                <label for="inputEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="inputEmail" value="{{ user_info.email }}"
+                                    disabled />
+                            </div>
+                            <div class="col-12 form-group">
+                                <label for="inputProfile" class="form-label">Profile Name</label>
+                                <input type="text" class="form-control" id="inputProfile"
+                                    value="{{ user_info.profile_name }}" disabled />
+                            </div>
+                            <div class="col-12 d-flex justify-content-center gap-5" style="gap: 10px;">
+                                <a href="/edit/{{ user_info._id }}" class="btn btn-primary">Update</a>
+                                <a href="/" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- End Section form -->
+            </div>
+        </div>
+        <!-- end content -->
+        {% if daftar_list %}
+        {% for item in daftar_list %}
         {% if item.status == 'pending' %}
-            <h1>Proses Pendaftaranmu Masih di prosess tunggu yaa</h1>
+        <div class="container bg-warning d-flex justify-content-center align-items-center"
+            style="width: 70%; padding: 30px; flex-direction: column;">
+            <h1 class="text-white text-center">Proses Pendaftaranmu Masih di prosess tunggu yaa</h1>
+            <a onclick="whatsapp()" style="cursor: pointer;" class="text-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
+                    class="bi bi-whatsapp" viewBox="0 0 16 16">
+                    <path
+                        d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+                </svg>
+            </a>
+        </div>
         {% else %}
-            <h1>kamu diterima </h1>
+        <div class="container bg-success" style="width: 70%; padding: 30px;">
+            <h1 class="text-white text-center">Siswa Aktif</h1>
+        </div>
         {% endif %}
-    {% endfor %}
-{% else %}
-<h1>Kamu belum mendaftar</h1>
-{% endif %}
+        {% endfor %}
+        {% else %}
+        <div class="container bg-danger" style="width: 70%; padding: 30px;">
+            <h1 class="text-white text-center">Kamu belum mendaftar</h1>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+</section>
+<div id="messageContainer" style="display: none;">
+    <p id="messageText">Hallo Guys</p>
+</div>
+
+<div class="footer">
+    <div class="copyright col-lg-12">
+        <p>
+            Copyright &copy; 2023 Explore Indonesia <br>
+            Design by <strong>Corsair</strong>
+        </p>
+    </div>
+</div>
+
 {% include "user/layout/footer.html" %}
