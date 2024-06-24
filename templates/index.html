@@ -19,10 +19,10 @@
       type: 'POST',
       url: '/testimoni/save',
       data: {
-      testimoni_give: testimoni,
-      nama_give: nama,
-      email_give: email,
-      subject_give: subject,
+        testimoni_give: testimoni,
+        nama_give: nama,
+        email_give: email,
+        subject_give: subject,
       },
       success: function (response) {
         if (response.msg === undefined || response.msg === null) {
@@ -113,34 +113,66 @@
             <div class="card">
               <h5>Package Kids</h5>
               <ul>
-                <li>Gratis Makan Siang</li>
-                <li>Gratis Snack</li>
-                <li>Lowongan Kerja</li>
+                <li>
+                  <div style="display: flex; justify-content: space-between;">
+                    <p>30 minutes</p>
+                    <p>550k</p>
+                  </div>
+                </li>
+                <li>
+                  <div style="display: flex; justify-content: space-between;">
+                    <p>45 minutes</p>
+                    <p>580k</p>
+                  </div>
+                </li>
+                <li>
+                  <div style="display: flex; justify-content: space-between;">
+                    <p>60 minutes</p>
+                    <p>620k</p>
+                  </div>
+                </li>
+                <p style="text-align: end; margin-top: 30px;">+ admission fee 50k</p>
               </ul>
               {% if user_info %}
               <form action="/daftar/{{ user_info.username }}">
-                <button type=" submit" class="btn-card">Rp. 3.000.000</button>
+                <button type=" submit" class="btn-card">Tertarik</button>
               </form>
               {% else %}
               <form action="login">
-                <button type=" submit" class="btn-card">Rp. 3.000.000</button>
+                <button type=" submit" class="btn-card">Tertarik</button>
               </form>
               {% endif %}
             </div>
             <div class="card">
               <h5>Package Adult</h5>
               <ul>
-                <li>Tiket Umroh Murah</li>
-                <li>Bantu Palestina</li>
-                <li>Bansos Pinjol</li>
+                <li>
+                  <div style="display: flex; justify-content: space-between;">
+                    <p>30 minutes</p>
+                    <p>570k</p>
+                  </div>
+                </li>
+                <li>
+                  <div style="display: flex; justify-content: space-between;">
+                    <p>45 minutes</p>
+                    <p>600k</p>
+                  </div>
+                </li>
+                <li>
+                  <div style="display: flex; justify-content: space-between;">
+                    <p>60 minutes</p>
+                    <p>655k</p>
+                  </div>
+                </li>
+                <p style="text-align: end; margin-top: 30px;">+ admission fee 50k</p>
               </ul>
               {% if user_info %}
               <form action="/daftar/{{ user_info.username }}">
-                <button type=" submit" class="btn-card">Rp. 3.000.000</button>
+                <button type=" submit" class="btn-card">Tertarik</button>
               </form>
               {% else %}
               <form action="login" method="get">
-                <button type=" submit" class="btn-card">Rp. 3.000.000</button>
+                <button type=" submit" class="btn-card">Tertarik</button>
               </form>
               {% endif %}
             </div>
@@ -224,51 +256,51 @@
               </div>
             </div>
           </div>
-
-          <div class="col-lg-6 col-md-6 col-sm-6">
-            <div class="gallery">
-              <img src="{{ url_for('static', filename='image-index/gallery/2.jpg') }}">
-              <div class="bg-text-gallery">
-                <div class="text-gallery">
-                  <h5> Gallery Image #2</h5>
-                  <p>
-                    Proses Pembelajaran.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div><!-- col-6 -->
-
-          <div class="col-lg-6 col-md-6 col-sm-6">
-            <div class="gallery">
-              <img src="{{ url_for('static', filename='image-index/gallery/3.jpg') }}">
-              <div class="bg-text-gallery">
-                <div class="text-gallery">
-                  <h5> Gallery Image #3</h5>
-                  <p>
-                    Proses Pembelajaran
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div><!-- col-6 -->
-
         </div><!-- col-6 -->
 
         <div class="col-lg-6">
-          <div class="col-lg-6 col-md-6 col-sm-6">
-            <div class="gallery">
-              <img src="{{ url_for('static', filename='image-index/gallery/4.jpg') }}">
-              <div class="bg-text-gallery">
-                <div class="text-gallery">
-                  <h5> Gallery Image #4</h5>
-                  <p>
-                    Proses Pembelajaran
-                  </p>
-                </div>
+          <div class="gallery">
+            <img src="{{ url_for('static', filename='image-index/gallery/2.jpg') }}">
+            <div class="bg-text-gallery">
+              <div class="text-gallery">
+                <h1> Gallery Image #2</h1>
+                <p>
+                  Proses Pembelajaran
+                </p>
+              </div>
+            </div>
+          </div>
+        </div><!-- col-6 -->
+
+        <div class="col-lg-6">
+          <div class="gallery">
+            <img src="{{ url_for('static', filename='image-index/gallery/3.jpg') }}">
+            <div class="bg-text-gallery">
+              <div class="text-gallery">
+                <h1> Gallery Image #3</h1>
+                <p>
+                  Proses Pembelajaran
+                </p>
+              </div>
+            </div>
+          </div>
+        </div><!-- col-6 -->
+
+        <div class="col-lg-6 col-md-6 col-sm-6">
+          <div class="gallery">
+            <img src="{{ url_for('static', filename='image-index/gallery/4.jpg') }}">
+            <div class="bg-text-gallery">
+              <div class="text-gallery">
+                <h1> Gallery Image #4</h1>
+                <p>
+                  Proses Pembelajaran
+                </p>
               </div>
             </div>
           </div><!-- col-6 -->
+
+
+
         </div><!-- col-6 -->
 
       </div>
